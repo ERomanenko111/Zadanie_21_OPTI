@@ -60,14 +60,14 @@ public class LocationController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-
     @GetMapping("/weather")
     public ResponseEntity<Weather> getWeatherForLocation(@RequestParam String name) {
         Optional<Geodata> optionalGeodata = repository.findByName(name);
         if (optionalGeodata.isPresent()) {
             Geodata geodata = optionalGeodata.get();
             String url = String.format("http://localhost:8082/?lat=%s&lon=%s", geodata.getLat(), geodata.getLon());
-            return new ResponseEntity<>(restTemplate.getForObject(url, Weather.class), HttpStatus.OK);
+            Weather weather = restTemplate.getForObject(url, Weather.class);
+            return new ResponseEntity<>(weather, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
