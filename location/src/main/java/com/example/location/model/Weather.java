@@ -17,4 +17,3 @@ public class Weather {
     private int sea_level;
     private int grnd_level;
 }
-

@@ -1,6 +1,6 @@
 package com.example.location.configuration;
 
-import com.example.location.model.Geodata;
+import com.example.location.model.Location;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

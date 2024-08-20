@@ -1,12 +1,12 @@
 package com.example.location.repository;
 
-import com.example.location.model.Geodata;
+import com.example.location.model.Location;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface GeodataRepository extends CrudRepository<Geodata, Integer> {
-    Optional<Geodata> findByName(String name);
+public interface LocationRepository extends CrudRepository<Location, Integer> {
+    Optional findByName(String name);
 }

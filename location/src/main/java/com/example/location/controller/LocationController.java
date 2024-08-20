@@ -1,7 +1,7 @@
 package com.example.location.controller;
 
-import com.example.location.model.Geodata;
-import com.example.location.repository.GeodataRepository;
+import com.example.location.model.Location;
+import com.example.location.repository.LocationRepository;
 import com.example.location.model.Weather;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,36 +15,35 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/location")
 public class LocationController {
-
     @Autowired
-    private GeodataRepository repository;
+    private LocationRepository repository;
 
     @Autowired
     private RestTemplate restTemplate;
 
     @GetMapping
-    public ResponseEntity<List<Geodata>> getAllLocations() {
-        List<Geodata> locations = (List<Geodata>) repository.findAll();
+    public ResponseEntity<List<Location>> getAllLocations() {
+        List<Location> locations = (List<Location>) repository.findAll();
         return ResponseEntity.ok(locations);
     }
 
     @GetMapping(params = "name")
-    public ResponseEntity<Geodata> getLocationByName(@RequestParam String name) {
-        Optional<Geodata> geodata = repository.findByName(name);
-        return geodata.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    public ResponseEntity<Location> getLocationByName(@RequestParam String name) {
+        Optional<Location> location = repository.findByName(name);
+        return location.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PostMapping
-    public ResponseEntity<Geodata> save(@RequestBody Geodata geodata) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(geodata));
+    public ResponseEntity<Location> save(@RequestBody Location location) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(location));
     }
 
     @PutMapping(params = "name")
-    public ResponseEntity<Geodata> updateLocation(@RequestParam String name, @RequestBody Geodata newGeodata) {
-        Optional<Geodata> optionalGeodata = repository.findByName(name);
-        if (optionalGeodata.isPresent()) {
-            newGeodata.setId(optionalGeodata.get().getId()); // Используем существующий id
-            return ResponseEntity.ok(repository.save(newGeodata));
+    public ResponseEntity<Location> updateLocation(@RequestParam String name, @RequestBody Location newLocation) {
+        Optional<Location> optionalLocation = repository.findByName(name);
+        if (optionalLocation.isPresent()) {
+            newLocation.setId(optionalLocation.get().getId());
+            return ResponseEntity.ok(repository.save(newLocation));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -52,20 +51,23 @@ public class LocationController {
 
     @DeleteMapping(params = "name")
     public ResponseEntity<Void> deleteLocation(@RequestParam String name) {
-        Optional<Geodata> optionalGeodata = repository.findByName(name);
-        if (optionalGeodata.isPresent()) {
-            repository.delete(optionalGeodata.get());
+        Optional<Location> optionalLocation = repository.findByName(name);
+        if (optionalLocation.isPresent()) {
+            repository.delete(optionalLocation.get());
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
     @GetMapping("/weather")
     public ResponseEntity<Weather> getWeatherForLocation(@RequestParam String name) {
-        Optional<Geodata> optionalGeodata = repository.findByName(name);
-        if (optionalGeodata.isPresent()) {
-            Geodata geodata = optionalGeodata.get();
-            String url = String.format("http://localhost:8082/?lat=%s&lon=%s", geodata.getLat(), geodata.getLon());
+        Optional<Location> optionalLocation = repository.findByName(name);
+        if (optionalLocation.isPresent()) {
+            Location location = optionalLocation.get();
+            // Формируем URL для получения погоды
+            String url = String.format("http://localhost:8082/?lat=%s&lon=%s", location.getLat(), location.getLon());
+            // Получаем данные о погоде с внешнего API
             Weather weather = restTemplate.getForObject(url, Weather.class);
             return new ResponseEntity<>(weather, HttpStatus.OK);
         } else {
