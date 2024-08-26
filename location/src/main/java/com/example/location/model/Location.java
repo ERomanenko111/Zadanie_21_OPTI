@@ -2,6 +2,7 @@ package com.example.location.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,10 +15,10 @@ import lombok.NonNull;
 @AllArgsConstructor
 public class Location {
     @Id
-    @GeneratedValue
-    int id;
-    @NonNull
-    private double lon;
-    @NonNull private double lat;
-    @NonNull private String name;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private double latitude;
+    private double longitude;
+    private String name;
+
 }

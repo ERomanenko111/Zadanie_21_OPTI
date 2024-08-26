@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class Sys {
-    private String country;
-    private int sunrise;
-    private int sunset;
+    public String country;
+    public int sunrise;
+    public int sunset;
 }

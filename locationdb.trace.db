@@ -1,0 +1,12 @@
+2024-08-26 15:59:21 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Объект уже закрыт
+The object is already closed [90007-214]
+2024-08-26 15:59:34 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Объект уже закрыт
+The object is already closed [90007-214]
+2024-08-26 17:17:42 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Объект уже закрыт
+The object is already closed [90007-214]
+2024-08-26 17:17:53 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Объект уже закрыт
+The object is already closed [90007-214]

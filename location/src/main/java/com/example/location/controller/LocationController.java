@@ -1,8 +1,8 @@
 package com.example.location.controller;
 
 import com.example.location.model.Location;
-import com.example.location.repository.LocationRepository;
 import com.example.location.model.Weather;
+import com.example.location.repository.LocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +15,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/location")
 public class LocationController {
+
     @Autowired
     private LocationRepository repository;
 
@@ -42,7 +43,7 @@ public class LocationController {
     public ResponseEntity<Location> updateLocation(@RequestParam String name, @RequestBody Location newLocation) {
         Optional<Location> optionalLocation = repository.findByName(name);
         if (optionalLocation.isPresent()) {
-            newLocation.setId(optionalLocation.get().getId());
+            newLocation.setId(optionalLocation.get().getId());  // сохраняем ID существующего объекта
             return ResponseEntity.ok(repository.save(newLocation));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -61,15 +62,30 @@ public class LocationController {
     }
 
     @GetMapping("/weather")
-    public ResponseEntity<Weather> getWeatherForLocation(@RequestParam String name) {
+    public ResponseEntity<Weather> getWeatherForLocation(@RequestParam("name") String name) {
         Optional<Location> optionalLocation = repository.findByName(name);
         if (optionalLocation.isPresent()) {
             Location location = optionalLocation.get();
-            // Формируем URL для получения погоды
-            String url = String.format("http://localhost:8082/?lat=%s&lon=%s", location.getLat(), location.getLon());
-            // Получаем данные о погоде с внешнего API
-            Weather weather = restTemplate.getForObject(url, Weather.class);
-            return new ResponseEntity<>(weather, HttpStatus.OK);
+
+            // Логирование для отладки
+            System.out.println("Fetching weather for location: " + location.getName()
+                    + " with lat: " + location.getLatitude()
+                    + " and lon: " + location.getLongitude());
+
+            String url = String.format("http://localhost:8082/weather?lat=54.1838&lon=45.1749", location.getLatitude(), location.getLongitude());
+
+            try {
+                Weather weather = restTemplate.getForObject(url, Weather.class);
+                if (weather == null) {
+                    // Если погода не найдена
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+                return new ResponseEntity<>(weather, HttpStatus.OK);
+            } catch (Exception e) {
+                e.printStackTrace(); // Логируем стек ошибки
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

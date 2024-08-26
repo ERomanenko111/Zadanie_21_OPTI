@@ -3,6 +3,7 @@ package com.example.person.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,12 +16,9 @@ import lombok.NonNull;
 @Data
 public class Person {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    @NonNull
     private String name;
-    @NonNull
     private String location;
 
     public Person (@NonNull String name, @NonNull String location) {

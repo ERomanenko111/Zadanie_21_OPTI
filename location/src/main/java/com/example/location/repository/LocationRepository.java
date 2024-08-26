@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface LocationRepository extends CrudRepository<Location, Integer> {
-    Optional findByName(String name);
+public interface LocationRepository extends CrudRepository<Location, Long> { // Измените сюда Long
+    Optional<Location> findByName(String name);
 }

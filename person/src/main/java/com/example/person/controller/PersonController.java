@@ -17,7 +17,9 @@ public class PersonController {
 
     @Autowired
     private PersonRepository repository;
-    private RestTemplate restTemplate = new RestTemplate();
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @GetMapping("{id}/weather")
     public ResponseEntity<Weather> getWeather(@PathVariable int id) {
